@@ -85,8 +85,8 @@ def rectangular_connectivity(x, sigma, nu=1):
 
 def fourier_rectangular_connectivity(k, sigma, nu=1):
     denominator = k * sigma
-    result = np.where(np.isclose(denominator, 0), nu, np.sin(denominator) / denominator)
-    result = np.where(np.isnan(result), 0, result)  # Handle NaN values from previous step
+    result = np.where(np.isclose(denominator, 0), 1, np.sin(denominator) / denominator)
+    result = np.where(np.isnan(result), 1, result)  # Handle NaN values from previous step
     return nu * result
 
 
