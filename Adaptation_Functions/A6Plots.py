@@ -551,14 +551,17 @@ def plot_varying_parameter(param,
     for idx, parameter in enumerate(range_of_parameter):
         param[varying_parameter] = parameter
         ue, ui = A1.get_adapt_equilibrium_points(param=param, I_e=I_e, I_i=I_i, ue_lim=ue_lim, ui_lim=ui_lim)
-        if len(ue) == 3:
-            diff_e[idx] = ue[2] - ue[0]
-            diff_i[idx] = ui[2] - ui[0]
-        for ue_eq, ui_eq in zip(ue, ui):
+        # if len(ue) == 3:
+        #     diff_e[idx] = ue[2] - ue[0]
+        #     diff_i[idx] = ui[2] - ui[0]
+        for ue_eq, ui_eq, j in zip(ue, ui, range(len(ue))):
             if A3.adapt_global_stability(param=param, ue_eq=ue_eq, ui_eq=ui_eq, wmn_hat=wmn_hat):
                 ue_stable.append(ue_eq)
                 ui_stable.append(ui_eq)
                 param_stable.append(parameter)
+                if len(ue) == 3 and ue_eq == ue[2]:
+                    diff_e[idx] = ue[2] - ue[0]
+                    diff_i[idx] = ui[2] - ui[0]
             elif not A2.local_stability(param=param, ue_eq=ue_eq, ui_eq=ui_eq):
                 ue_locally_unstable.append(ue_eq)
                 ui_locally_unstable.append(ui_eq)
@@ -577,8 +580,8 @@ def plot_varying_parameter(param,
     # axs[0].scatter(param_unstable, ue_unstable, color='blue')
     axs[0].scatter(param_unstable, ue_unstable, color='cyan', label='Turing unstable')
     axs[0].set_xlabel(varying_parameter)
-    axs[0].set_ylabel(r"$u_e^{st}$")
-    axs[0].set_title(r"$u_e^{st}$ Dependent on " + varying_parameter)
+    axs[0].set_ylabel(r"$u_e^{eq}$")
+    axs[0].set_title(r"$u_e^{eq}$ Dependent on " + varying_parameter)
     axs[0].legend()
     axs[0].grid(True)
 
@@ -599,13 +602,17 @@ def plot_varying_parameter(param,
     # Plot the difference between the up- and down-state
     fig, axs = plt.subplots(1, 2, figsize=(12, 5))
     mask = diff_e != 0.0
+    print('Difference Excitatory at ',range_of_parameter[mask][0], ' : ', diff_e[mask][0])
+    print('Difference Excitatory at ',range_of_parameter[mask][-1], ' : ', diff_e[mask][-1])
+    print('Difference Inhibitory at ',range_of_parameter[mask][0], ' : ', diff_i[mask][0])
+    print('Difference Inhibitory at ',range_of_parameter[mask][-1], ' : ', diff_i[mask][-1])
     axs[0].plot(range_of_parameter[mask], diff_e[mask], label=r"$u_e$", color='blue')
     axs[0].set_xlabel(varying_parameter)
-    axs[0].set_title("Difference of "  + r"$u_e$" + " between up-and down-state")
+    axs[0].set_title("Difference of "  + r"$u_e^{eq}$" + " between up-and down-state")
     axs[0].legend()
     axs[1].plot(range_of_parameter[mask], diff_i[mask], label=r"$u_i$", color='red')
     axs[1].set_xlabel(varying_parameter)
-    axs[1].set_title("Difference of "  + r"$u_i$" + " between up-and down-state")
+    axs[1].set_title("Difference of "  + r"$u_i^{eq}$" + " between up-and down-state")
     axs[1].legend()
     plt.tight_layout()
     plt.show()
