@@ -281,7 +281,7 @@ def plot_eigenvalues_full_model(param: dict,
     if compute_eq:
         ue_eq_list, ui_eq_list = A1.get_adapt_equilibrium_points(param=param, I_e=I_e, I_i=I_i, ue_lim=ue_lim, ui_lim=ui_lim, du=1e-4, iterations=10)
     
-    ms=1
+    ms=2 # Markersize
     for ue_eq, ui_eq in zip(ue_eq_list, ui_eq_list):
         fig, axs = plt.subplots(1, 2, figsize=(12, 5), gridspec_kw={'width_ratios': [1, 1], 'wspace': 0.2})
         
@@ -325,9 +325,9 @@ def plot_eigenvalues_full_model(param: dict,
             dissect(i)
             
         # Mark Starting points
-        axs[0].plot(np.real(eig1)[1], np.imag(eig1[1]), color="green", marker="o", ms=8)
-        axs[0].plot(np.real(eig2)[1], np.imag(eig2[1]), color="green", marker="o", ms=8)
-        axs[0].plot(np.real(eig3)[1], np.imag(eig3[1]), color="green", marker="o", ms=8)
+        axs[0].plot(np.real(eig1)[1], np.imag(eig1[1]), color="green", marker="o", ms=ms+8)
+        axs[0].plot(np.real(eig2)[1], np.imag(eig2[1]), color="green", marker="o", ms=ms+8)
+        axs[0].plot(np.real(eig3)[1], np.imag(eig3[1]), color="green", marker="o", ms=ms+8)
 
         # Plot all three eigenvalues in complex plane in blue, if stable and red if unstable
         for i in range(3):
@@ -579,8 +579,12 @@ def plot_varying_parameter(param,
     axs[0].scatter(param_locally_unstable, ue_locally_unstable, color="violet", label="Locally unstable")
     # axs[0].scatter(param_unstable, ue_unstable, color='blue')
     axs[0].scatter(param_unstable, ue_unstable, color='cyan', label='Turing unstable')
-    axs[0].set_xlabel(varying_parameter)
-    axs[0].set_ylabel(r"$u_e^{eq}$")
+    if varying_parameter == 'g':
+        axs[0].set_xlabel('Adaptation Stregth g')
+    else:
+        axs[0].set_xlabel(varying_parameter)
+    # axs[0].set_ylabel(r"$u_e^{eq}$")
+    axs[0].set_ylabel(r"Excitory Input Voltage $u_e^{eq}$")
     axs[0].set_title(r"$u_e^{eq}$ Dependent on " + varying_parameter)
     axs[0].legend()
     axs[0].grid(True)
@@ -589,12 +593,11 @@ def plot_varying_parameter(param,
     axs[1].scatter(param_stable, ui_stable, color='green', label='Stable')
     axs[1].scatter(param_locally_unstable, ui_locally_unstable, color="violet", label="Locally unstable")
     axs[1].scatter(param_unstable, ui_unstable, color='cyan', label='Turing unstable')
-    # axs[1].scatter(param_unstable, ui_unstable, color='blue')
-    axs[1].set_xlabel(varying_parameter)
-    axs[1].set_ylabel(r"$u_i^{st}$")
+    # axs[1].set_ylabel(r"$u_i^{st}$")
+    axs[1].set_ylabel(r"Inhibitory Input Voltage $u_e^{eq}$")
+    axs[1].set_xticklabels([])
     axs[1].set_title(r"$u_i^{st}$ Dependent on " + varying_parameter)
     axs[1].grid(True)
-    axs[1].legend()
 
     plt.tight_layout()
     plt.show()
@@ -607,12 +610,17 @@ def plot_varying_parameter(param,
     print('Difference Inhibitory at ',range_of_parameter[mask][0], ' : ', diff_i[mask][0])
     print('Difference Inhibitory at ',range_of_parameter[mask][-1], ' : ', diff_i[mask][-1])
     axs[0].plot(range_of_parameter[mask], diff_e[mask], label=r"$u_e$", color='blue')
-    axs[0].set_xlabel(varying_parameter)
+    axs[0].set_ylabel(r'$\Delta$ $u_e^{eq}$')
+    if varying_parameter == 'g':
+        axs[0].set_xlabel('Adaptation Stregth g')
+    else:
+        axs[0].set_xlabel(varying_parameter)
     axs[0].set_title("Difference of "  + r"$u_e^{eq}$" + " between up-and down-state")
     axs[0].legend()
     axs[1].plot(range_of_parameter[mask], diff_i[mask], label=r"$u_i$", color='red')
-    axs[1].set_xlabel(varying_parameter)
     axs[1].set_title("Difference of "  + r"$u_i^{eq}$" + " between up-and down-state")
+    axs[1].set_ylabel(r'$\Delta$ $u_e^{eq}$')
+    axs[1].set_xticklabels([])
     axs[1].legend()
     plt.tight_layout()
     plt.show()

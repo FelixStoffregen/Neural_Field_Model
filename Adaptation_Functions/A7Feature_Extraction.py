@@ -81,6 +81,9 @@ def plot_first_node(t,
     plt.legend(loc="upper right")
 
     N = len(t_new)
+    print(t_start)
+    print(t_stop)
+    print(N)
     dt = t_new[1] - t_new[0]
 
     # Compute the corresponding frequencies
@@ -106,7 +109,7 @@ def plot_first_node(t,
     max_idx = np.argmax(u_e_hat)
     # dominant_freq = f[max_idx]
     dominant_freq = frequency_zero_crossing(ue_first, t_new)
-    plt.axvline(dominant_freq, color="r", linestyle="--", label=f"Dominant frequency [Hz]: {dominant_freq:.4f}")
+    plt.axvline(dominant_freq, color="r", linestyle="--", label=f"Dominant frequency [Hz]: {dominant_freq:.3f}")
     plt.legend(loc="upper right")
     plt.tight_layout()
     if save:
